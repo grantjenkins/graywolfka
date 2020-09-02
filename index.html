@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+
+<!--
+
+By Gray Wolf, August 2020
+
+Some details about this program
+
+- I really tried to showcase what you can do with HTML in the KA environment.
+
+- The site will adjust to the device / screen size you are using.
+  Try it out on your computer and your phone/tablet to see the difference.
+  If you're using the KA extension you'll be able to resize the browser to
+  see the responsiveness in action.
+
+- Built using Bootstrap responsive framework which takes
+  care of a lot of the stuff behind the scenes including media queries,
+  components, branding, etc. If you're serious about web development
+  then I suggest you check out Bootstrap or Materialize (there are many more)
+  
+- Used the Khan Academy API quite extensively in this program to get
+  > Profile Info, Discussion Stats, Showcase Badges
+  > Programs Info
+  > Posts from the SUBSCRIBE Thread
+  
+- Arrays of objects to agument the data returned from the API such as
+  catagories for the different programs (game, animation, etc.)
+
+  
+- Tested on:
+  > Windows 10 - Chrome, Firefox, Edge, Opera
+  > iPhone - Safari
+      
+-->
+
+<html lang="en" class="h-100">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gray Wolf</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!--
+    Arrays/objects for holding base information.
+    They will be further populated from data retrieved using the KA API.-->
+    <script>
+        var profile = {
+            kaid: "kaid_639291037700385781852565",
+            nickname: "",
+            avatar: {
+                displayName: "",
+                imageSrc: ""
+            },
+            bio: "",
+            points: 0,
+            videos: 0,
+            lastStreak: 0,
+            dateJoined: "2014-09-04T11:50:54Z",
+            discussion: {
+                votes: 0,
+                questions: 0,
+                comments: 0,
+                projectAnswers: 0,
+                flags: 0,
+                answers: 0,
+                projectQuestions: 0,
+                replies: 0
+            },
+            badges: [
+                {
+                    description: "",
+                    extendedDescription: "",
+                    iconSrc: ""
+                },
+                {
+                    description: "",
+                    extendedDescription: "",
+                    iconSrc: ""
+                },
+                {
+                    description: "",
+                    extendedDescription: "",
+                    iconSrc: ""
+                },
+                {
+                    description: "",
+                    extendedDescription: "",
+                    iconSrc: ""
+                },
+                {
+                    description: "",
+                    extendedDescription: "",
+                    iconSrc: ""
+                }
+            ]
+        }
+
+        //List of program tags
+        var tags = [
+            "Graphic",
+            "Animation",
+            "Game",
+            "How To",
+            "HTML"
+        ];
+        var currentTag = "";
+        
+        //List of programs
+        var programs = [
+            {
+                title: "Fish Simulation",
+                id: "4853452271714304",
+                tags: ["Animation"],
+                showcase: true,
+                description: "This emulates a 3D effect using shape manipulation."
+            },
+            {
+                title: "Monster Mash",
+                id: "4708597296988160",
+                tags: ["Game"],
+                showcase: false,
+                description: "This was my first game I made on Khan Academy."
+            },
+            {
+                title: "Cannon",
+                id: "4898616818958336",
+                tags: ["Game"],
+                showcase: false,
+                description: "This game uses some physics to get through each level."
+            },
+            {
+                title: "Rover",
+                id: "6053666578055168",
+                tags: ["Game"],
+                showcase: true,
+                description: "This game was my first attempt at using noise for the terrain."
+            },
+            {
+                title: "Pacman",
+                id: "4693927142965248",
+                tags: ["Game"],
+                showcase: false,
+                description: "Tried to add something special to the classic Pacman with some scaling and rotating."
+            },
+            {
+                title: "Juggler",
+                id: "5038805586247680",
+                tags: ["Game"],
+                showcase: true,
+                description: "Based this game off the iOS game Mr Juggler. How many objects can you juggle?"
+            },
+            {
+                title: "Air Strike",
+                id: "5750700229607424",
+                tags: ["Game"],
+                showcase: false,
+                description: "Tried out some masking for some different patterns on the planes."
+            },
+            {
+                title: "Pinky",
+                id: "5182965035450368",
+                tags: ["Game"],
+                showcase: false,
+                description: "This was my first (and only) platformer, with some aspects of my Cannon game."
+            },
+            {
+                title: "Newton",
+                id: "5041608304508928",
+                tags: ["Game"],
+                showcase: false,
+                description: "I focused on game performance with this game and have added those techniques into all future games."
+            },
+            {
+                title: "Shape Invaders",
+                id: "4794929708302336",
+                tags: ["Game"],
+                showcase: false,
+                description: "A bit of a twist on the classic Space Invaders game."
+            },
+            {
+                title: "Future",
+                id: "4673618358976512",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "This was submitted for the Utopia competition and was one of the winners."
+            },
+            {
+                title: "Snake vs. Blocks",
+                id: "4975098138279936",
+                tags: ["Game"],
+                showcase: false,
+                description: "A blend between the classic Snake game and a platformer. Also added sound for the first time in this game."
+            },
+            {
+                title: "Monster Mash - Spooky House",
+                id: "5438198615539712",
+                tags: ["Game"],
+                showcase: false,
+                description: "This was submitted for the Spooky House competition and was one of the winners."
+            },
+            {
+                title: "Orbit",
+                id: "4504310358966272",
+                tags: ["Game"],
+                showcase: false,
+                description: "Tried to work with some circular aspects for each level of this game."
+            },
+            {
+                title: "Bookshelf",
+                id: "5357181346529280",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "Submitted as my Bookshelf project. Currently the top program."
+            },
+            {
+                title: "Drogo the Dragon",
+                id: "5207906133409792",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "This graphic was the first time I really tried to use bezierVertex."
+            },
+            {
+                title: "Silhouette",
+                id: "5839458446426112",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "Tried to work a bit more on my graphics skills with this one."
+            },
+            {
+                title: "Flat Art (Anime)",
+                id: "4609193487515648",
+                tags: ["Graphic"],
+                showcase: true,
+                description: "This is my favorite graphic so far. Mostly made up of curves using bezierVertex."
+            },
+            {
+                title: "Puppy Pointillism",
+                id: "5401475784605696",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "This one uses a previous triangular art (puppy) and modifies it using pixel manipulation."
+            },
+            {
+                title: "Nom Nom",
+                id: "6182811615707136",
+                tags: ["Animation"],
+                showcase: false,
+                description: "Just having a bit of fun with this one. A sheep eating some yummy cake."
+            },
+            {
+                title: "Partikels",
+                id: "4828614945488896",
+                tags: ["Game", "HTML"],
+                showcase: false,
+                description: "A quick game using HTML and JavaScript/JQuery. Also focused on nice CSS transitions/animations."
+            },
+            {
+                title: "Victory Storm Logo",
+                id: "4564559635873792",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "A logo I created for Victory Storm. Uses my lightening code so that lightening comes out of both hands."
+            },
+            {
+                title: "Robot",
+                id: "6661746277892096",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "A quick graphic of a robot with a bit of animation for the arm movement."
+            },
+            {
+                title: "Hangman",
+                id: "6100520944762880",
+                tags: ["Game"],
+                showcase: false,
+                description: "The classic Hangman game where you need to choose letters to find the phrase."
+            },
+            {
+                title: "Hurdles",
+                id: "4889491117522944",
+                tags: ["Game"],
+                showcase: false,
+                description: "A quick game where you run around the world (rotating) while jumping over hurdles."
+            },
+            {
+                title: "Road Trip",
+                id: "4773752969248768",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "A flat art graphic with some animation. Just having a bit of fun."
+            },
+            {
+                title: "Game Wheel",
+                id: "6682422816292864",
+                tags: ["Animation"],
+                showcase: false,
+                description: "A spinning wheel using some cos/sin. Just a bit of fun."
+            },
+            {
+                title: "Dancing Robot",
+                id: "4649595608645632",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "This was a bit of fun with some animation. Also setup so that the community could provide Memes to be added."
+            },
+            {
+                title: "Team Pyroach",
+                id: "5072740297752576",
+                tags: ["HTML"],
+                showcase: false,
+                description: "This was our team homepage for the Primavera coding competition held during 2020."
+            },
+            {
+                title: "The King's Crown",
+                id: "5812918049914880",
+                tags: ["Game"],
+                showcase: false,
+                description: "A platformer. This was a collab mostly between myself and Mango, plus a bit of help from Classic Kid and Lunar Wolfie."
+            },
+            {
+                title: "Forest",
+                id: "5693258295902208",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "This was a collab between myself and NitOwl007. It was my first collab on Khan Academy."
+            }
+        ];
+        var programsCards = [];
+        
+        var howToCards = [
+            {
+                title: "Scenes and Buttons",
+                url: "https://www.khanacademy.org/computer-programming/cs/5381277884956672",
+                description: "Shows how to create and use buttons (rectangle and circle) and to switch scenes when you click on a button.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Wheel Rotation",
+                url: "https://www.khanacademy.org/computer-programming/cs/5860703940722688",
+                description: "This is not just how to rotate. It shows how to accurately rotate based on a wheel's (circle) speed and circumference.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Falling Snow",
+                url: "https://www.khanacademy.org/computer-programming/cs/5295950872002560",
+                description: "Shows how to create falling snow while resuing objects. Could easily be used to create rain or other falling objects.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Scene Changes",
+                url: "https://www.khanacademy.org/computer-programming/cs/4946430862639104",
+                description: "This is just one of many ways to change scenes when clicking on the screen. Ideal for programs that click through different pages.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Themes and basic Transitions",
+                url: "https://www.khanacademy.org/computer-programming/cs/4666286627438592",
+                description: "Shows one way to manage different themes and also a couple of transitions using CSS transition.",
+                tags: ["HTML", "CSS", "JQuery"]
+            },
+            {
+                title: "HTML Template",
+                url: "https://www.khanacademy.org/computer-programming/cs/5398583666884608",
+                description: "An HTML Template showing how to manage multiple pages in the KA environment, plus buttons and transitions using CSS keyFrames.",
+                tags: ["HTML", "CSS", "JQuery"]
+            },
+            {
+                title: "Repeating Object",
+                url: "https://www.khanacademy.org/computer-programming/cs/4848141995573248",
+                description: "This program explains how to move an object across the screen and have it repeat.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Function with Arguments",
+                url: "https://www.khanacademy.org/computer-programming/cs/6711298808578048",
+                description: "This program explains the basic setup and use of a function with arguments. Good for understanding how to complete the Project: Fish Tank.",
+                tags: ["PJS"]
+            }
+        ];
+        
+        //List of Tutorials in the Learning Page
+        var tutorials = [
+            {
+                title: "XXXX",
+                url: "https://www.khanacademy.org"
+            },
+            {
+                title: "XXXX",
+                url: "https://www.khanacademy.org"
+            },
+            {
+                title: "XXXX",
+                url: "https://www.khanacademy.org"
+            },
+            {
+                title: "XXXX",
+                url: "https://www.khanacademy.org"
+            },
+            {
+                title: "XXXX",
+                url: "https://www.khanacademy.org"
+            }
+        ];
+    </script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding-top: 3.5rem;
+        }
+        
+        #home-jumbotron {
+            background-color: var(--secondary);
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/d/de/Gray_wolf_%288952676448%29.jpg");
+            background-position: center calc(50% - 80px);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        
+        .jumbotron, footer, #posts .card-header {
+            background-image: linear-gradient(45deg, transparent 20%, rgb(85, 85, 85) 25%, transparent 25%), linear-gradient(-45deg, transparent 20%, rgb(85, 85, 85) 25%, transparent 25%), linear-gradient(-45deg, transparent 75%, rgb(136, 136, 136) 80%, transparent 0);
+            background-size: 30px 30px, 30px 30px;
+        }
+        
+        p, .page li, footer span {
+            font-weight: 300;
+        }
+        #mainNavigation .nav-link, #mainNavigation .dropdown-item,
+        .nav-linkx, .dropdown-item, .navbar-text {
+            padding: .5rem .5rem;
+            font-size: 0.9rem;
+        }
+        
+        /* handles the page transitions */
+        .showPage {
+            -webkit-animation: showPage 2s ease forwards;
+               -moz-animation: showPage 2s ease forwards;
+                 -o-animation: showPage 2s ease forwards;
+                    animation: showPage 2s ease forwards;
+        }
+        
+        .page {
+            transition: all 0.5s ease;
+        }
+        
+        .page-header  {
+            background-color: var(--secondary);
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/0/02/The_endangered_gray_wolf_canis_lupus.jpg");
+            background-position: center calc(50% - 80px);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        .flex-box {
+            padding: 1rem;
+            border: solid 1px rgba(173, 173, 173, 0.8);
+        }
+        
+        #gray-wolf-title {
+            position: absolute;
+            top: 15px;
+            left: 45%;
+            z-index: 1035;
+        }
+        
+        #program-cards .card, #howto-cards .card, #posts .card, #profileContainer {
+            opacity: 0;
+            animation: fadeIn 2s ease-out 1s forwards;
+        }
+
+        .home-about, .subscribe-why {
+            opacity: 0;
+            animation: show 1s ease-in 1.5s forwards;
+        }
+        .home-subscribe, .subscribe-how, .tutorials-header {
+            opacity: 0;
+            animation: show 1s ease-in 2s forwards;
+        }
+        .home-programs, .subscribe-notification {
+            opacity: 0;
+            animation: show 1s ease-in 2.5s forwards;
+        }
+        #home .featured-programs-title {
+            opacity: 0;
+            animation: show 1s ease-in 3s forwards;
+        }
+        #home .featured-programs {
+            opacity: 0;
+            animation: show 1s ease-in 3.5s forwards;
+        }
+        
+        #about .card {
+            max-width: 20rem;
+        }
+        
+        .tooltip .tooltip-inner {
+            background-color: var(--secondary);
+        }
+        
+        #profileContainer .nav-link.active, #programs .nav-link.active {
+            background-color: var(--secondary);
+            color: var(--white) !important;
+        }
+        
+        @-webkit-keyframes show {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+           @-moz-keyframes show {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+             @-o-keyframes show {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+                @keyframes show {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(80%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0%);
+            }
+        }
+           @-moz-keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(80%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0%);
+            }
+        }
+             @-o-keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(80%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0%);
+            }
+        }
+                @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(80%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0%);
+            }
+        }
+
+        @-webkit-keyframes showPage {
+                from {
+                    opacity:0;
+                    transform: translateY(-100%);
+                }
+                to {
+                    opacity:1;
+                    transform: translateY(0%);
+                }
+            }
+               @-moz-keyframes showPage {
+                from {
+                    opacity:0;
+                    transform: translateY(-100%);
+                }
+                to {
+                    opacity:1;
+                    transform: translateY(0%);
+                }
+            }
+                 @-o-keyframes showPage {
+                from {
+                    opacity:0;
+                    transform: translateY(-100%);
+                }
+                to {
+                    opacity:1;
+                    transform: translateY(0%);
+                }
+            }
+                    @keyframes showPage {
+                from {
+                    opacity:0;
+                    transform: translateY(-100%);
+                }
+                to {
+                    opacity:1;
+                    transform: translateY(0%);
+                }
+            }
+    </style>
+</head>
+<body class="d-flex flex-column h-100">
+
+    <!--Global Navigation-->
+    <nav id="mainNavigation" class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top" role="navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavigation" aria-controls="myNavigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon">
+                <i class="fa fa-bars" style="color:#ddd; font-size:24px;"></i>
+            </span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-sm-center" id="myNavigation">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link d-none d-sm-block" href="javascript:switchPage('#home');"><span class="sr-only">(current)</span>
+                        <svg width="24" height="24" viewBox="0 0 20 20" class="bi bi-house-door-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.5 10.995V14.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5V11c0-.25-.25-.5-.5-.5H7c-.25 0-.5.25-.5.495z"/>
+                        <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                        </svg>
+                        Gray Wolf
+                    </a>
+                    <a class="nav-link d-block d-sm-none" href="javascript:switchPage('#home');">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:switchPage('#about');">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:switchPage('#subscribe');">Subscribe</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:switchPage('#programs');">Programs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:switchPage('#posts');">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="javascript:switchPage('#learning');">Learning</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!--Title on center of Nav with extra small devices-->
+    <span id="gray-wolf-title" class="d-block d-sm-none text-light text-muted">Gray Wolf</span>
+
+    <!--Main Content (pages)-->
+    <main role="main" class="flex-shrink-0">
+        <div id="home" class="page">
+            <div id="home-jumbotron" class="jumbotron jumbotron-fluid text-white bg-secondary py-3">
+                <div class="container">
+                    <h1 class="display-4">Gray Wolf</h1>
+                    <p class="lead my-3">Welcome. You'll find a little bit about me and a showcase of some of my programs.</p>
+                </div>
+            </div> <!--Jumbotron-->
+            <div class="container">
+                <!-- Example row of columns -->
+                <div class="row">
+                    <div class="col-md-4 home-about">
+                        <h2>About</h2>
+                        <p>Welcome to my subpage. You'll find some info about me, some learning resources plus a catalog of some of my programs on KA. Click on the link below to view info about me.</p>
+                        <p><a href="javascript:switchPage('#about');" role="button">View details &raquo;</a></p>
+                    </div>
+                    <div class="col-md-4 home-subscribe">
+                        <h2>Subscribe</h2>
+                        <p>Subscribing means that you will get a notification each time I post a new program (game, graphic, animation, etc.). To find out how to subscribe, click on the link below.</p>
+                        <p><a href="javascript:switchPage('#subscribe');" role="button">View details &raquo;</a></p>
+                    </div>
+                    <div class="col-md-4 home-programs">
+                        <h2>Programs</h2>
+                        <p>The Programs page has a list of some of my programs I've built in the Khan Academy environment. Click on the link below to view the Programs catalog.</p>
+                        <p><a href="javascript:switchPage('#programs');" role="button">View details &raquo;</a></p>
+                    </div>
+                </div>
+            
+                <!--<hr>-->
+            </div> <!--About, Subscribe, Programs Container-->
+            <div class="container featured-programs-title py-3">
+                <h4 class="text-secondary">Featured Programs</h4>
+                <hr class="my-1">
+            </div> <!--Featured Programs Header-->
+            <div class="container featured-programs">
+                <div id="featured-program-cards" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4"></div>
+            </div> <!--Featured Programs Cards-->
+        </div> <!--Home-->
+        <div id="about" class="page">
+            <section class="page-header bg-secondary py-2">
+                <div class="container py-2">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <h2 class="text-light">About</h2>
+                            <!--<p class="text-light opacity-70">A bit of info about myself</p>-->
+                            <p id="bio-info" class="text-light opacity-70"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="container mt-4">
+                <p>Check out <a href="https://www.khanacademy.org/profile/kaid_639291037700385781852565" title="Profile" target="_blank">my profile</a>, or view a summary below.</p>
+                <p>A bit about me... I love most sports, but especially Tennis. Of course I love to program - been coding for many years now. Fairly proficient in quite a few programming languages. On Khan Academy I really enjoy making games and learning new skills (not just programming). Also love helping others so if you have any questions, or need some help, don't hesitate to let me know.</p>
+            </div> <!--Summary about me-->
+            <div id="profileContainer" class="container py-1">
+                <ul class="nav nav-tabs mb-0 pb-0">
+                    <li class="nav-item"><a id="profile-button" class="nav-link text-reset active" data-toggle="tab" href="#profileTab">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link text-reset" data-toggle="tab" href="#discussionTab">Discussion</a></li>
+                    <li class="nav-item"><a class="nav-link text-reset" data-toggle="tab" href="#badgesTab">Badges</a></li>
+                </ul>
+                <div class="tab-content clearfix p-3 mb-2 bt-0 pt-0">
+                    <div id="profileTab" class="tab-pane fade active">
+                        <p>A few general profile stats <span class="text-muted">(updates automatically using the KA API)</span>.</p>
+                        <div id="profile-info" class="text-dark"></div>
+                    </div>
+                    <div id="discussionTab" class="tab-pane fade">
+                        <p>My discussion stats <span class="text-muted">(updates automatically using the KA API)</span>.</p>
+                        <div id="discussion-info" class="text-dark"></div>
+                    </div>
+                    <div id="badgesTab" class="tab-pane fade">
+                        <p>My showcase badges <span class="text-muted">(updates automatically using the KA API)</span>.</p>
+                        <div id="badge-info" class="text-dark"></div>
+                    </div>
+                </div>
+            </div> <!--Tabs (Profile, Discussion, Badges-->
+        </div> <!--About-->
+        <div id="subscribe" class="page">
+            <section class="page-header bg-secondary py-2">
+                <div class="container py-2">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <h2 class="text-light">Subscribe</h2>
+                            <p class="text-light opacity-70">Check out details on how to subscribe</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="container py-4">
+                <div class="row">
+                    <div class="col-12 subscribe-why">
+                        <h3>Why subscribe?</h3>
+                        <p>So that you get a notification each time I release a new program (game, graphic, animation, etc.).</p>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="col-12 subscribe-how">
+                        <h3>How to subscribe?</h3>
+                        <p>Go into the <strong>Tips & Thanks</strong> just below this program and find the thread titled <code>SUBSCRIBE HERE</code></p>
+                        <p>To subscribe, just post a single period (.) in the thread. Posting something under 3 characters will only be visible by yourself, so you won't spam others. Feel free to let me know that you subscribed in another thread.</p>
+                    </div>
+                </div>    
+                <div class="row">
+                    <div class="col-12 subscribe-notification">
+                        <h3>How will you be notified?</h3>
+                        <p>When I release a new program you will get a notification the same as you do when someone comments on one of your programs, or when you get a new badge, etc. The notification will include a link to the Subscribe thread where you can click on the link to the program.</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!--Subscribe-->
+        <div id="programs" class="page">
+            <section class="page-header bg-secondary py-2">
+                <div class="container py-2">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <h2 class="text-light">Programs</h2>
+                            <p class="text-light opacity-70">A list of my KA programs</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="container py-4">
+                <p>Below is a list of some programs I've built on Khan Academy. You can filter the list using the tabs at the top. To view one of the programs simply click on the image or title.</p>
+                <!--Filter Programs Navigation-->
+                <nav class="navbar navbar-light bg-light mb-2">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="javascript:setTag('');" role="button">All</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:setTag('Animation');" role="button">Animation</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="javascript:setTag('Game');">Game</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="javascript:setTag('Graphic');">Graphic</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="javascript:setTag('HTML');">HTML</a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <!--All Programs-->
+                <div id="program-cards" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4"></div>
+            </div>
+        </div> <!--Programs-->
+        <div id="posts" class="page">
+            <section class="page-header bg-secondary py-2">
+                <div class="container py-2">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <h2 class="text-light">Posts</h2>
+                            <p class="text-light opacity-70">Check out my latest posts</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="container py-4">
+                <p>Below are all my posts within my <code>SUBSCRIBE</code> thread. Click on the link to view the program.</p>
+                <div id="posts-info"></div>
+            </div>
+        </div> <!--Posts-->
+        <div id="learning" class="page">
+            <section class="page-header bg-secondary py-2">
+                <div class="container py-2">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <h2 class="text-light">Learning</h2>
+                            <p class="text-light opacity-70">Check out some useful coding resources</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="container py-2">
+                <!--Uses the tutorials array to populate the tutorials-->
+                <ul id="tutorials-list"></ul>
+                <h2>Courses</h2>
+                <p>A list of the KA official programming courses.</p>
+                <ul>
+                    <li><a href="https://www.khanacademy.org/computing/cs/programming" title="Intro to JS: Drawing & Animation">Intro to JS: Drawing & Animation</a></li>
+                    <li><a href="https://www.khanacademy.org/computing/cs/html-css" title="Intro to HTML/CSS: Making webpages">Intro to HTML/CSS: Making webpages</a></li>
+                    <li><a href="https://www.khanacademy.org/computing/cs/programming-games-visualizations" title="Advanced JS: Games & Visualizations">Advanced JS: Games & Visualizations</a></li>
+                    <li><a href="https://www.khanacademy.org/computing/cs/programming-natural-simulations" title="Advanced JS: Natural Simulations">Advanced JS: Natural Simulations</a></li>
+                    <li><a href="https://www.khanacademy.org/computing/cs/html-css-js" title="HTML/JS: Making webpages interactive">HTML/JS: Making webpages interactive</a></li>
+                    <li><a href="https://www.khanacademy.org/computing/cs/html-js-jquery" title="HTML/JS: Making webpages interactive with jQuery">HTML/JS: Making webpages interactive with jQuery</a></li>
+                </ul>
+                <div class="row">
+                    <div class="col-12 tutorials-header">
+                        <h2>Tutorials</h2>
+                        <p>A list of (hopefully) useful tutorials. If you want me to create any more tutorials then let me know in the <strong>Tips & Thanks</strong>.</p>
+                    </div>
+                </div>
+                <div id="howto-cards" class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4"></div>
+            </div>
+        </div> <!--Learning-->
+    </main>
+    
+    <!--Footer-->
+    <footer class="footer mt-auto py-4 bg-secondary text-light">
+        <div class="container">
+            <a class="btn-scroll-top show float-right text-light scroll-To-Top" href="javascript:gotoTop();" data-scroll="">
+                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-up-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path fill-rule="evenodd" d="M4.646 8.354a.5.5 0 0 0 .708 0L8 5.707l2.646 2.647a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 0 0 0 .708z"/>
+                    <path fill-rule="evenodd" d="M8 11.5a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-1 0v5a.5.5 0 0 0 .5.5z"/>
+                </svg>
+            </a>
+            <span>Gray Wolf, 2020</span>
+        </div>
+    </footer>
+    
+    <!--Script Imports-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Custom Script-->
+    <script>
+        //Takes a raw date and returns a nicely formatted date string
+        function getPrettyDate(dt) {
+            var arr = dt.split('-');
+            var y = arr[0];
+            var m = arr[1];
+            var d = arr[2].substring(0, 2);
+            
+            var month = "";
+            
+            switch(m) {
+                case "01":
+                    month = "Jan";
+                    break;
+                case "02":
+                    month = "Feb";
+                    break;
+                case "03":
+                    month = "Mar";
+                    break;
+                case "04":
+                    month = "Apr";
+                    break;
+                case "05":
+                    month = "May";
+                    break;
+                case "06":
+                    month = "Jun";
+                    break;
+                case "07":
+                    month = "Jul";
+                    break;
+                case "08":
+                    month = "Aug";
+                    break;
+                case "09":
+                    month = "Sep";
+                    break;
+                case "10":
+                    month = "Oct";
+                    break;
+                case "11":
+                    month = "Nov";
+                    break;
+                case "12":
+                    month = "Dec";
+                    break;
+            }
+            
+            return d + " " + month + " " + y;
+        }
+        
+        //Get program data and store in programsList array
+        function getUserPrograms() {
+            return $.getJSON('https://www.khanacademy.org/api/internal/user/scratchpads?kaid=' + profile.kaid + "&limit=100&callback=?", function (data) {
+            })
+            .done(function(data) {
+                data.scratchpads.forEach(function(program) {
+                    var p = undefined;
+                    for(var i = 0; i < programs.length; i++) {
+                        if(program.url.includes(programs[i].id)) {
+                            p = programs[i];
+                        }
+                    }
+                    
+                    if(p) {
+                        programsCards.push({
+                            id: p.id,
+                            description: p.description,
+                            showcase: p.showcase,
+                            tags: p.tags,
+                            title: p.title,
+                            url: program.url,
+                            updated: program.created,
+                            votes: program.sumVotesIncremented,
+                            spinoffs: program.spinoffCount
+                        });
+                    }
+                })
+            });
+        };
+        //Build up the program catalog once the API has returned the data
+        $.when(getUserPrograms()).then(function (data) {
+            $("#program-cards").empty();
+            $("#featured-program-cards").empty();
+            
+            var allPrograms = "", featuredPrograms = "";
+            
+            programsCards.forEach(function(program) {
+                var tags = "";
+                program.tags.forEach(function(tag) {
+                    tags+= '<span class="badge badge-pill badge-secondary font-weight-light mr-2">' + tag + '</span>';
+                })
+
+                var p = '<div class="col mb-4">' +
+                    '<div class="card h-100">' +
+                        '<div class="card-header bg-light text-dark">' +
+                            '<a href="' + program.url + '" target="_blank"><img src="' + program.url + '/latest.png" class="card-img-top"></a>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                            '<h5 class="card-title"><a href="' + program.url + '" target="_blank">' + program.title + '</a></h5>' +
+                            '<p class="card-text">' + tags + '</p>' +
+                            '<p class="card-text">' + program.description + '</p>' +
+                        '</div>' +
+                        '<div class="card-footer">' +
+                            '<small class="text-muted float-left">Votes: ' + program.votes + '</small>' +
+                            '<small class="text-muted float-right">Spin-offs: ' + program.spinoffs + '</small>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';;
+                
+
+                if(program.showcase) {
+                    featuredPrograms+= p;
+                }
+                
+                allPrograms+= p;
+            })
+
+            $("#program-cards").append(allPrograms);
+            $("#featured-program-cards").append(featuredPrograms);
+        });
+        //Builds a filtered view of the programs based on the current tag
+        function filterPrograms() {
+            $("#program-cards").empty();
+            var allPrograms = "";
+            
+            programsCards.forEach(function(program) {
+                if(currentTag === "" || program.tags.includes(currentTag)) {
+                    var tags = "";
+                    program.tags.forEach(function(tag) {
+                        tags+= '<span class="badge badge-pill badge-secondary font-weight-light mr-2">' + tag + '</span>';
+                    })
+    
+                    var p = '<div class="col mb-4">' +
+                        '<div class="card h-100">' +
+                            '<div class="card-header bg-light text-dark">' +
+                                '<a href="' + program.url + '" target="_blank"><img src="' + program.url + '/latest.png" class="card-img-top"></a>' +
+                            '</div>' +
+                            '<div class="card-body">' +
+                                '<h5 class="card-title"><a href="' + program.url + '" target="_blank">' + program.title + '</a></h5>' +
+                                '<p class="card-text">' + tags + '</p>' +
+                                '<p class="card-text">' + program.description + '</p>' +
+                            '</div>' +
+                            '<div class="card-footer">' +
+                                '<small class="text-muted float-left">Votes: ' + program.votes + '</small>' +
+                                '<small class="text-muted float-right">Spin-offs: ' + program.spinoffs + '</small>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';;
+                    
+                    allPrograms+= p;
+                }
+            })
+
+            $("#program-cards").append(allPrograms);
+        }
+        //Sets the tag and calls the filter programs
+        function setTag(tag) {
+            currentTag = tag;
+            filterPrograms();
+        }
+        
+        //get formatted month
+        function getMonth(m) {
+            switch(m) {
+                case "01":
+                    return "January";
+                case "02":
+                    return "February";
+                case "03":
+                    return "March";
+                case "04":
+                    return "April";
+                case "05":
+                    return "May";
+                case "06":
+                    return "June";
+                case "07":
+                    return "July";
+                case "08":
+                    return "August";
+                case "09":
+                    return "September";
+                case "10":
+                    return "October";
+                case "11":
+                    return "November"
+                case "12":
+                    return "December";
+            }
+        }
+        //get formatted date
+        function getNiceDate(date) {
+            var d = new Date(date);
+            
+            var year = d.getFullYear();
+            var day = ("0" + d.getDate()).slice(-2);
+            var month = ("0" + (d.getMonth() + 1)).slice(-2);
+            month = getMonth(month);
+
+            return day + " " + month + ", " + year;
+        }
+        //formats the post returned by the API
+        function formatPost(post) {
+            post = post.replace(/\n/g, "|"); //use this to split the lines
+            post = post.replace(/(https:\/\/[^\s\n]+)/gi, "<a href=\"$1\" target=\"_blank\">$1</a>");
+            post = post.replace(/\_([^\_]+)\_/g, "<em>$1</em>");
+            post = post.replace(/\*([^\*]+)\*/g, "<strong>$1</strong>");
+            
+            var arr = post.split("|");
+            for(var i = arr.length - 1; i >= 0; i--) {
+                if(arr[i] === "|" || arr[i] === "") {
+                    arr.splice(i, 1);
+                }
+                else {
+                    arr[i] = "<p>" + arr[i] + "</p>";
+                }
+            }
+            
+            return arr.join('');
+        }
+        
+        //Get posts using the KA API
+        function getPosts() {
+            return $.getJSON('https://www.khanacademy.org/api/internal/discussions/kaencrypted_09d5b5d2820cd8f006e551e8ed65d5d4_ee434f784dab74b970ec767e3b4f38e3bac408a1b9395fea63a28c4843318fb2817ffc0bd17cba35e11f41d6db997c45facb2046a1e2c7ed5deeab55274b5dce7870ff92ebe3b0038b5f41a1bdeefe0869b6d1e11956f5119d3a03d7984198191071ff070160af22aac7e13a90db859d12761cf1af2af5bb8794618b6fbdbc25a2f830739d8a458b26ae53ef011ca688c864f35d4f5fab526c1d47344c1f95ffce1e97ffd2fda46f810086744ac0bbd7ee96161f648a45bfd3a7785de1aa4d8d/replies?limit=100&callback=?', function (data) {
+            })
+            .done(function(data) {
+                data.sort(function(a, b) {
+                   return a.date < b.date ? 1 : -1; 
+                });
+                
+                $("#posts-info").empty();
+
+                var output = "";
+                
+                data.forEach(function(post) {
+                    if(post.authorKaid !== "kaid_639291037700385781852565" || post.content.length <= 3) {
+                        return;
+                    }
+                    
+                    output+=    '<div class="card mb-4">' +
+                                    '<div class="card-header bg-secondary text-light">' +
+                                        '<span>Posted on <small class="text-mutedx text-light">' + getNiceDate(post.date) + '</small></span>' +
+                                    '</div>' +
+                                    '<div class="card-body">' +
+                                        formatPost(post.content) +
+                                    '</div>' +
+                                '</div>';
+                })
+
+                $("#posts-info").append(output);
+            });
+        };
+        getPosts();
+        
+        //Get Discussion Stats using the KA API
+        function getDiscussionStats() {
+            return $.getJSON('https://www.khanacademy.org/api/internal/user/discussion/statistics?kaid=' + profile.kaid + '&callback=?', function (data) {
+            })
+            .done(function(data) {
+                profile.discussion.votes = data.votes;
+                profile.discussion.questions = data.questions;
+                profile.discussion.comments = data.comments;
+                profile.discussion.projectAnswers = data.projectanswers;
+                profile.discussion.flags = data.flags;
+                profile.discussion.answers = data.answers;
+                profile.discussion.projectQuestions = data.projectquestions;
+                profile.discussion.replies = data.replies;
+                
+                $("#discussion-info").empty();
+
+                var stats = '<div class="card">' +
+                                '<ul class="list-group list-group-flush">' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.votes + '</strong> votes' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.questions + '</strong> questions' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.comments + '</strong> tips and thanks' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.projectanswers + '</strong> project help replies' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.flags + '</strong> flags raised' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.answers + '</strong> answers' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.projectquestions + '</strong> project help requests' +
+                                    '</li>' +
+                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                        data.replies + '</strong> comments' +
+                                    '</li>' +
+                                '</ul>' +
+                            '</div>';
+                
+                $("#discussion-info").append(stats);
+            });
+        };
+        
+        //Setup How To Cards with Array data
+        function setupHowToCards() {
+            $("#howto-cards").empty();
+            var output = "";
+            
+            howToCards.forEach(function(howto) {
+                var tags = "";
+                howto.tags.forEach(function(tag) {
+                    tags+= '<span class="badge badge-pill badge-secondary font-weight-light mr-2">' + tag + '</span>';
+                })
+                
+                var p = '<div class="col mb-4">' +
+                        '<div class="card h-100">' +
+                            '<div class="card-header bg-light text-dark">' +
+                                '<a href="' + howto.url + '" target="_blank"><img src="' + howto.url + '/latest.png" class="card-img-top"></a>' +
+                            '</div>' +
+                            '<div class="card-body">' +
+                                '<h5 class="card-title"><a href="' + howto.url + '" target="_blank">' + howto.title + '</a></h5>' +
+                                '<p class="card-text">' + tags + '</p>' +
+                                '<p class="card-text">' + howto.description + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';;
+                    
+                output+= p;
+            })
+            
+            $("#howto-cards").append(output);
+        }
+        setupHowToCards();
+        
+        //Get user profile data and store in profile object
+        function getUserProfile() {
+            return $.getJSON('https://www.khanacademy.org/api/internal/user/profile?kaid=' + profile.kaid + "&callback=?", function (data) {
+            })
+            .done(function(data) {
+                profile.nickname = data.nickname;
+                profile.avatar.displayName = data.avatar.displayName;
+                profile.avatar.imageSrc = data.avatarSrc;
+                profile.bio = data.bio;
+                profile.points = data.points;
+                profile.videos = data.countVideosCompleted;
+                profile.lastStreak = data.streakLastLength;
+                profile.dateJoined = data.dateJoined;
+                
+                for(var i = 0; i < data.publicBadges.length; i++) {
+                    profile.badges[i].description = data.publicBadges[i].description;
+                    profile.badges[i].extendedDescription = data.publicBadges[i].translatedSafeExtendedDescription;
+                    profile.badges[i].iconSrc = data.publicBadges[i].icons.large;
+                }
+            });
+        };
+        
+        //Get the discussion stats
+        getDiscussionStats();
+        
+        //call profile function and when complete build About page
+        $.when(getUserProfile()).then(function (data) {
+            $("#profile-info").empty();
+            $("#badge-info").empty();
+            $("#bio-info").empty();
+            
+            var badges = '';
+            for(var i = 0; i < profile.badges.length; i++) {
+                badges+= '<img class="mr-4 mb-4" data-toggle="tooltip" data-html="true" data-placement="top" title="<span><h5>' + profile.badges[i].description + '</h5><p> ' + profile.badges[i].extendedDescription + '</p></span>" src="' + profile.badges[i].iconSrc + '" width="70" height="70">';
+            }
+
+            var stats = '<div id="profileCard" class="card">' +
+                            '<ul class="list-group list-group-flush">' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                    getNiceDate(profile.dateJoined) + '</strong> date joined' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                    profile.points + '</strong> energy points' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                    profile.videos + '</strong> videos completed' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                    profile.lastStreak + ' days</strong> current streak' +
+                                '</li>' +
+                            '</ul>' +
+                    '</div>';
+            
+            $("#bio-info").append('<span><strong>Bio:</strong> ' + profile.bio + '</span>');
+            $("#profile-info").append(stats);
+            $("#badge-info").append(badges);
+
+            $("#profileTab").addClass('show');
+        });
+        
+        //handle setting active main navigation nav links
+        $('#mainNavigation .navbar-nav a').on('click', function () {
+            $('#mainNavigation .navbar-nav').find('li a.active').removeClass('active');
+            $(this).addClass('active');
+        });
+        
+        //handle setting active program filter nav links
+        $('#programs .nav a').on('click', function () {
+            $('#programs .nav').find('li a.active').removeClass('active');
+            $(this).addClass('active');
+        });
+        
+        $(function () {
+            $("#badge-info").tooltip({ selector: '[data-toggle=tooltip]' });
+        });
+    </script>
+    
+    <!--Page related scripts-->
+    <script>
+        //scroll to the top of the page (cross browser compatable)
+        function gotoTop() {
+		    $('html, body').animate({scrollTop : 0}, 700);
+		}
+		
+        //Handles the hiding/showing of pages
+		var switchPage = function (page){
+			//Hide all pages
+			$(".page").css({ display: "none" });
+			//Display the page you passed in
+			$(page).css({ display: "block" });
+			
+			$(".page").removeClass('showPage');
+            $(page).addClass('showPage');
+
+            gotoTop();
+		};
+		
+		//Display the home page when the site loads
+		switchPage('#home');
+		
+        $(document).ready(function(){
+            //cross browser solution for smooth scrolling
+            $('.scroll-To-Top').click(function(){
+                $('html, body').animate({scrollTop : 0}, 700);
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
