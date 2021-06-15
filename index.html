@@ -15,18 +15,16 @@ Some details about this program
 
 - Built using Bootstrap responsive framework which takes
   care of a lot of the stuff behind the scenes including media queries,
-  components, branding, etc. If you're serious about web development
-  then I suggest you check out Bootstrap or Materialize (there are many more)
+  components, branding, etc.
   
 - Used the Khan Academy API quite extensively in this program to get
   > Profile Info, Discussion Stats, Showcase Badges
   > Programs Info
   > Posts from the SUBSCRIBE Thread
   
-- Arrays of objects to agument the data returned from the API such as
+- Arrays of objects to augment the data returned from the API such as
   catagories for the different programs (game, animation, etc.)
 
-  
 - Tested on:
   > Windows 10 - Chrome, Firefox, Edge, Opera
   > iPhone - Safari
@@ -55,14 +53,14 @@ Some details about this program
             bio: "",
             points: 0,
             videos: 0,
-            lastStreak: 0,
+            // lastStreak: 0,
             dateJoined: "2014-09-04T11:50:54Z",
             discussion: {
                 votes: 0,
                 questions: 0,
                 comments: 0,
                 projectAnswers: 0,
-                flags: 0,
+                // flags: 0,
                 answers: 0,
                 projectQuestions: 0,
                 replies: 0
@@ -102,14 +100,15 @@ Some details about this program
             "Animation",
             "Game",
             "How To",
-            "HTML"
+            "HTML",
+            "Other"
         ];
         var currentTag = "";
         
         //List of programs
         var programs = [
             {
-                title: "Fish Simulation",
+                title: "Fish Simulation (Animated)",
                 id: "4853452271714304",
                 tags: ["Animation"],
                 showcase: true,
@@ -133,7 +132,7 @@ Some details about this program
                 title: "Rover",
                 id: "6053666578055168",
                 tags: ["Game"],
-                showcase: true,
+                showcase: false,
                 description: "This game was my first attempt at using noise for the terrain."
             },
             {
@@ -147,7 +146,7 @@ Some details about this program
                 title: "Juggler",
                 id: "5038805586247680",
                 tags: ["Game"],
-                showcase: true,
+                showcase: false,
                 description: "Based this game off the iOS game Mr Juggler. How many objects can you juggle?"
             },
             {
@@ -155,7 +154,7 @@ Some details about this program
                 id: "5750700229607424",
                 tags: ["Game"],
                 showcase: false,
-                description: "Tried out some masking for some different patterns on the planes."
+                description: "Destroy the enemy planes and bases before they shoot you down."
             },
             {
                 title: "Pinky",
@@ -214,6 +213,13 @@ Some details about this program
                 description: "Submitted as my Bookshelf project. Currently the top program."
             },
             {
+                title: "Fish Animation",
+                id: "5642571222286336",
+                tags: ["Animation"],
+                showcase: false,
+                description: "This was my second fish animation that led into my 3D simulated one."
+            },
+            {
                 title: "Drogo the Dragon",
                 id: "5207906133409792",
                 tags: ["Graphic"],
@@ -231,7 +237,7 @@ Some details about this program
                 title: "Flat Art (Anime)",
                 id: "4609193487515648",
                 tags: ["Graphic"],
-                showcase: true,
+                showcase: false,
                 description: "This is my favorite graphic so far. Mostly made up of curves using bezierVertex."
             },
             {
@@ -324,15 +330,271 @@ Some details about this program
                 tags: ["Graphic", "Animation"],
                 showcase: false,
                 description: "This was a collab between myself and NitOwl007. It was my first collab on Khan Academy."
+            },
+            {
+                title: "Team Floran",
+                id: "5560083884359680",
+                tags: ["HTML"],
+                showcase: false,
+                description: "This was our team homepage for The Coding Olympics coding competition held during 2020."
+            },
+            {
+                title: "Gray Wolf",
+                id: "4876588413698048",
+                tags: ["HTML"],
+                showcase: false,
+                description: "This is my subpage (the one you're in now :))."
+            },
+            {
+                title: "Cat in a storm",
+                id: "5165045920251904",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "Just having some fun with bezier, rain system and updated lightning."
+            },
+            {
+                title: "Mulan",
+                id: "6042629895831552",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "Tried to make a graphic that looked like a drawing with shading."
+            },
+            {
+                title: "Breaky on the go",
+                id: "5978974353309696",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "Playing around with some more animation techniques."
+            },
+            {
+                title: "Dog",
+                id: "5311598305165312",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "Having a bit more fun with some animation :)"
+            },
+            {
+                title: "Trick or Treat",
+                id: "4850487344709632",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "Trying out a bit more complex animations :)"
+            },
+            {
+                title: "Halloween",
+                id: "5890912342982656",
+                tags: ["Game"],
+                showcase: false,
+                description: "This game is based off the Google Doodle Halloween 2018."
+            },
+            {
+                title: "Baby Yoda (Interactive)",
+                id: "5907425294761984",
+                tags: ["Animation"],
+                showcase: false,
+                description: "Baby Yoda with some animation and interactivity."
+            },
+            {
+                title: "Cricket (Game)",
+                id: "6028016370794496",
+                tags: ["Game"],
+                showcase: false,
+                description: "Cricket game based off the Google Doodle."
+            },
+            {
+                title: "Dragon (Animated)",
+                id: "4735815490420736",
+                tags: ["Animation", "Graphic"],
+                showcase: true,
+                description: "Playing around with some more complex animations."
+            },
+            {
+                title: "Ainbo",
+                id: "4967318593945600",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "A graphic based on Ainbo - Spirit of the Amazon."
+            },
+            {
+                title: "Crazy Dog (Animated)",
+                id: "4557776884285440",
+                tags: ["Animation"],
+                showcase: false,
+                description: "Zoned out and decided to just make something a bit fun."
+            },
+            {
+                title: "ISOs (Animated)",
+                id: "6581210573127680",
+                tags: ["Animation"],
+                showcase: false,
+                description: "Having a bit of fun with some ISO stuff."
+            },
+            {
+                title: "BB-8 (Animated)",
+                id: "6415202411560960",
+                tags: ["Animation"],
+                showcase: false,
+                description: "An interactive BB-8 animation."
+            },
+            {
+                title: "shrink.ka",
+                id: "6731263093719040",
+                tags: ["Game"],
+                showcase: false,
+                description: "Collect as many dots as you can within 30 seconds."
+            },
+            {
+                title: "KA Memory Match",
+                id: "6525579605524480",
+                tags: ["Game", "HTML"],
+                showcase: false,
+                description: "A simple memory game with a bit of perspective."
+            },
+            {
+                title: "Critter Cannon",
+                id: "6700595169148928",
+                tags: ["Game"],
+                showcase: false,
+                description: "A fun game based off Kitten Cannon."
+            },
+            {
+                title: "Rider on the storm",
+                id: "5198153120169984",
+                tags: ["Animation"],
+                showcase: false,
+                description: "A fun animation based on Game of Thrones."
+            },
+            {
+                title: "Wolfie, Post COVID",
+                id: "6163672522506240",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "Poor Wolfie had a hard time with lockdown."
+            },
+            {
+                title: "Gray Wolf Intro",
+                id: "5669830262210560",
+                tags: ["Animation"],
+                showcase: false,
+                description: "My Gray Wolf Intro I'll put at the start of other programs."
+            },
+            {
+                title: "Let's Dance",
+                id: "4738861317439488",
+                tags: ["Animation"],
+                showcase: false,
+                description: "Some more fun with animating."
+            },
+            {
+                title: "Life is good",
+                id: "5379680999260160",
+                tags: ["Other"],
+                showcase: false,
+                description: "I count myself very lucky. Life is good!!"
+            },
+            {
+                title: "Clocks Collection",
+                id: "6434137918357504",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "A small collection of clocks for people to use in their programs."
+            },
+            {
+                title: "Deadpool (Animated)",
+                id: "5896219445379072",
+                tags: ["Animation"],
+                showcase: false,
+                description: "A quick animation for a bit of fun :)"
+            },
+            {
+                title: "Unicorn",
+                id: "5228744043085824",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "Who doesn't love unicorns :)"
+            },
+            {
+                title: "Car Crash",
+                id: "5372254209654784",
+                tags: ["Game"],
+                showcase: false,
+                description: "Complete laps without crashing. Harder than is seems :)"
+            },
+            {
+                title: "Baby Groot (Interactive)",
+                id: "6297250333409280",
+                tags: ["Graphic", "Animation"],
+                showcase: true,
+                description: "An interactive animation of Baby Groot :)"
+            },
+            {
+                title: "Creating a Dodge Game (Tutorial)",
+                id: "5347594564747264",
+                tags: ["HTML", "How To"],
+                showcase: false,
+                description: "A comprehensive tutorial on how to make a Dodge Game"
+            },
+            {
+                title: "Zombies (Animated)",
+                id: "5389158750044160",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "Night of the Living Bread - A fun Zombie animation."
+            },
+            {
+                title: "Creating Pixel Art + (Tutorial)",
+                id: "6192620261818368",
+                tags: ["HTML", "How To"],
+                showcase: false,
+                description: "A comprehensive tutorial on how to make a Pixel Art Program"
+            },
+            {
+                title: "Dancing Bugs (Animated)",
+                id: "4602642780078080",
+                tags: ["Graphic", "Animation"],
+                showcase: false,
+                description: "A couple of bugs dancing to the beats :)"
+            },
+            {
+                title: "Monkey Business (Animated)",
+                id: "5392300823756800",
+                tags: ["Graphic", "Animation"],
+                showcase: true,
+                description: "A fun animation of a Monkey busy at work :)"
+            },
+            {
+                title: "Lab Girl - Anime",
+                id: "5574236519219200",
+                tags: ["Graphic"],
+                showcase: false,
+                description: "A graphic of a lab girl - Anime style"
             }
         ];
         var programsCards = [];
         
         var howToCards = [
             {
+                title: "Creating a Dodge Game",
+                url: "https://www.khanacademy.org/computer-programming/creating-a-dodge-game/5347594564747264",
+                description: "A comprehensive tutorial on how to make a Dodge Game.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Creating Pixel Art +",
+                url: "https://www.khanacademy.org/computer-programming/creating-a-pixel-art-program/6192620261818368",
+                description: "A comprehensive tutorial on how to make a Pixel Art Program.",
+                tags: ["PJS"]
+            },
+            {
                 title: "Scenes and Buttons",
                 url: "https://www.khanacademy.org/computer-programming/cs/5381277884956672",
                 description: "Shows how to create and use buttons (rectangle and circle) and to switch scenes when you click on a button.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Rotated Rect Buttons",
+                url: "https://www.khanacademy.org/cs/rotated-rect-buttons/5809515444256768",
+                description: "Shows how to create and use rotated rectangle buttons and to switch scenes when you click on a button.",
                 tags: ["PJS"]
             },
             {
@@ -375,6 +637,18 @@ Some details about this program
                 title: "Function with Arguments",
                 url: "https://www.khanacademy.org/computer-programming/cs/6711298808578048",
                 description: "This program explains the basic setup and use of a function with arguments. Good for understanding how to complete the Project: Fish Tank.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Rounded Triangles",
+                url: "https://www.khanacademy.org/computer-programming/rounded-triangles/4948542539382784",
+                description: "This program allows you to create triangles with rounded edges.",
+                tags: ["PJS"]
+            },
+            {
+                title: "Rounded Shapes",
+                url: "https://www.khanacademy.org/computer-programming/rounded-shapes/5328225744928768",
+                description: "This program allows you to create shapes with rounded edges.",
                 tags: ["PJS"]
             }
         ];
@@ -803,6 +1077,9 @@ Some details about this program
                         <li class="nav-item">
                             <a class="nav-link" role="button" href="javascript:setTag('HTML');">HTML</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" role="button" href="javascript:setTag('Other');">Other</a>
+                        </li>
                     </ul>
                 </nav>
                 
@@ -871,7 +1148,7 @@ Some details about this program
                     <path fill-rule="evenodd" d="M8 11.5a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-1 0v5a.5.5 0 0 0 .5.5z"/>
                 </svg>
             </a>
-            <span>Gray Wolf, 2020</span>
+            <span>Gray Wolf, 2014-2021</span>
         </div>
     </footer>
     
@@ -1087,12 +1364,16 @@ Some details about this program
         }
         //formats the post returned by the API
         function formatPost(post) {
+            //console.log(post);
             post = post.replace(/\n/g, "|"); //use this to split the lines
-            post = post.replace(/(https:\/\/[^\s\n]+)/gi, "<a href=\"$1\" target=\"_blank\">$1</a>");
+            post = post.replace(/(https:\/\/[^\s|]+)/gi, "<a href=\"$1\" target=\"_blank\">$1</a>");
+            //Changed this to reflect the replacement of \n to |
+            //post = post.replace(/(https:\/\/[^\s\n]+)/gi, "<a href=\"$1\" target=\"_blank\">$1</a>");
             post = post.replace(/\_([^\_]+)\_/g, "<em>$1</em>");
             post = post.replace(/\*([^\*]+)\*/g, "<strong>$1</strong>");
             
             var arr = post.split("|");
+            console.log(arr);
             for(var i = arr.length - 1; i >= 0; i--) {
                 if(arr[i] === "|" || arr[i] === "") {
                     arr.splice(i, 1);
@@ -1147,7 +1428,7 @@ Some details about this program
                 profile.discussion.questions = data.questions;
                 profile.discussion.comments = data.comments;
                 profile.discussion.projectAnswers = data.projectanswers;
-                profile.discussion.flags = data.flags;
+                // profile.discussion.flags = data.flags;
                 profile.discussion.answers = data.answers;
                 profile.discussion.projectQuestions = data.projectquestions;
                 profile.discussion.replies = data.replies;
@@ -1168,9 +1449,9 @@ Some details about this program
                                     '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
                                         data.projectanswers + '</strong> project help replies' +
                                     '</li>' +
-                                    '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
-                                        data.flags + '</strong> flags raised' +
-                                    '</li>' +
+                                    // '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                    //     data.flags + '</strong> flags raised' +
+                                    // '</li>' +
                                     '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
                                         data.answers + '</strong> answers' +
                                     '</li>' +
@@ -1229,7 +1510,7 @@ Some details about this program
                 profile.bio = data.bio;
                 profile.points = data.points;
                 profile.videos = data.countVideosCompleted;
-                profile.lastStreak = data.streakLastLength;
+                // profile.lastStreak = data.streakLastLength;
                 profile.dateJoined = data.dateJoined;
                 
                 for(var i = 0; i < data.publicBadges.length; i++) {
@@ -1265,9 +1546,9 @@ Some details about this program
                                 '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
                                     profile.videos + '</strong> videos completed' +
                                 '</li>' +
-                                '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
-                                    profile.lastStreak + ' days</strong> current streak' +
-                                '</li>' +
+                                // '<li class="list-group-item d-flex justify-content-between align-items-center"><strong>' +
+                                //     profile.lastStreak + ' days</strong> current streak' +
+                                // '</li>' +
                             '</ul>' +
                     '</div>';
             
